@@ -10,7 +10,7 @@ function GlobalStyle() {
         font: sans-serif;
       }
     `}</style>
-  );
+  )
 }
 
 function HomePage() {
@@ -24,7 +24,7 @@ function HomePage() {
         }
       `}</style>
     </div>
-  );
+  )
 }
 
-export default HomePage;
+export default HomePage
