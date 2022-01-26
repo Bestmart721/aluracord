@@ -3,5 +3,6 @@ export const STRINGS = {
     TITLE: "Olá, seja bem vindo!",
     USERNAME_INPUT_LABEL: "Github username",
     LOGIN_BUTTON_LABEL: "Entrar",
+    GO_TO_CHAT_BUTTON_LABEL: "Ir para o chat",
   },
 };
