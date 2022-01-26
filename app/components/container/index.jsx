@@ -1,10 +1,10 @@
-import { GlobalStyle } from '../../style'
+import { GlobalStyle } from "../../style";
 
 export function Container({ children }) {
   return (
-    <div>
+    <>
       <GlobalStyle />
       {children}
-    </div>
-  )
+    </>
+  );
 }
