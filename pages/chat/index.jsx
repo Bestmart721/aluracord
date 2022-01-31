@@ -72,13 +72,15 @@ function ChatPage() {
           <li
             key={msg.id}
             style={{
-              backgroundColor: msg.isOwner ? COLORS.DENIM : COLORS.GREEN_VOGUE,
+              backgroundColor:
+                msg.user === user?.username ? COLORS.DENIM : COLORS.GREEN_VOGUE,
               color: COLORS.ATHENS_GRAY,
               resize: "none",
               borderRadius: "15px",
               padding: "10px 13px",
               marginBottom: "15px",
-              alignSelf: msg.isOwner ? "flex-end" : "flex-start",
+              alignSelf:
+                msg.user === user?.username ? "flex-end" : "flex-start",
               maxWidth: "50%",
               display: "flex",
               flexDirection: "column",

@@ -1,5 +1,5 @@
 export function messageFactory(object) {
-  const { id, created_at, username, message, isOwner } = object ?? {};
+  const { id, created_at, username, message } = object ?? {};
 
   const date = new Date(created_at);
 
@@ -8,6 +8,5 @@ export function messageFactory(object) {
     createdAt: date.toLocaleTimeString() ?? "",
     user: username ?? "",
     message: message ?? "",
-    isOwner: Boolean(username === "gabridefreitas"),
   };
 }
