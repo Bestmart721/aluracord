@@ -23,7 +23,7 @@ function HomePage() {
 
   useEffect(async () => {
     if (shouldFetchData) {
-      const { data } = await github(inputUsername);
+      const { data } = await github.getUserData(inputUsername);
 
       setShouldFetchData(false);
       setGlobalState({ ...globalState, user: userFactory(data) });

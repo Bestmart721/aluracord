@@ -1,14 +1,17 @@
-import { Box, Button, TextField, Text } from "@skynexui/components";
+import { Box, Button, TextField, Text, Image } from "@skynexui/components";
 import { useEffect, useState } from "react";
 
-import { COLORS, STRINGS } from "../../src";
+import { COLORS, STRINGS, PAGES } from "../../src";
 
 import { SupabaseService } from "../../src/services";
 import { messageFactory } from "../../src/factories";
+import { useGlobaState } from "../../src/hooks";
+import { useRouter } from "next/router";
 
 const { CHAT_PAGE } = STRINGS;
 
 function ChatPage() {
+  const router = useRouter();
   const supabase = SupabaseService();
 
   const [globalState, setGlobalState] = useGlobaState();
@@ -30,6 +33,10 @@ function ChatPage() {
   }
 
   useEffect(() => {
+    if (!user) {
+      router.push(PAGES.HOME);
+    }
+
     getMessages();
   }, []);
 
@@ -106,6 +113,14 @@ function ChatPage() {
           width: "100%",
         }}
       >
+        <Image
+          src={user?.avatarURL}
+          styleSheet={{
+            width: "60px",
+            borderRadius: "100%",
+            marginLeft: "",
+          }}
+        />
         <TextField
           value={inputMessage}
           onChange={({ target: { value } }) => {
@@ -125,6 +140,7 @@ function ChatPage() {
             resize: "none",
             borderRadius: "15px",
             padding: "10px 13px",
+            marginHorizontal: "15px",
             backgroundColor: COLORS.ATHENS_GRAY,
             color: COLORS.BUNKER,
           }}
@@ -133,7 +149,6 @@ function ChatPage() {
           iconName="arrowRight"
           disabled={!inputMessage}
           styleSheet={{
-            marginLeft: "15px",
             backgroundColor: COLORS.BURNT_SIENNA,
           }}
           onClick={onMessageSubmit}
