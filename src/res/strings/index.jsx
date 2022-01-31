@@ -5,4 +5,7 @@ export const STRINGS = {
     LOGIN_BUTTON_LABEL: "Entrar",
     GO_TO_CHAT_BUTTON_LABEL: "Ir para o chat",
   },
+  CHAT_PAGE: {
+    INPUT_PLACEHOLDER: "Aa",
+  },
 };
