@@ -5,23 +5,28 @@ import { useRouter } from "next/router";
 
 import { COLORS, PAGES, STRINGS } from "../src/index";
 
+import { useGlobaState } from "../src/hooks";
+import { userFactory } from "../src/factories";
+import { GithubService } from "../src/services";
+
 const { HOME_PAGE } = STRINGS;
 
 function HomePage() {
   const router = useRouter();
+  const github = GithubService();
 
+  const [globalState, setGlobalState] = useGlobaState();
   const [inputUsername, setInputUsername] = useState("");
   const [shouldFetchData, setShouldFetchData] = useState(false);
-  const [user, setUser] = useState(null);
+
+  const { user } = globalState;
 
   useEffect(async () => {
     if (shouldFetchData) {
-      const userData = await fetch(
-        `https://api.github.com/users/${inputUsername}`
-      );
+      const { data } = await github(inputUsername);
 
       setShouldFetchData(false);
-      setUser(await userData.json());
+      setGlobalState({ ...globalState, user: userFactory(data) });
     }
   }, [shouldFetchData, inputUsername]);
 
@@ -41,8 +46,6 @@ function HomePage() {
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: COLORS.BUNKER,
-        paddingVertical: "15vh",
-        paddingHorizontal: "30vw",
       }}
     >
       <Box
@@ -76,7 +79,7 @@ function HomePage() {
             hasLabel={false}
             onChange={({ target: { value } }) => {
               if (user) {
-                setUser(null);
+                setGlobalState({ ...globalState, user: null });
               }
 
               setInputUsername(value);
@@ -126,12 +129,11 @@ function HomePage() {
               borderRadius: "100%",
             }}
           />
-          <Text
-            variant="heading5"
-            styleSheet={{ color: COLORS.GREEN_VOGUE, marginTop: "15px" }}
-          >
-            {user?.name}
-          </Text>
+          <Box styleSheet={{ paddingVertical: "15px", height: "15px" }}>
+            <Text variant="heading5" styleSheet={{ color: COLORS.GREEN_VOGUE }}>
+              {user?.name}
+            </Text>
+          </Box>
         </Box>
       </Box>
     </Box>
