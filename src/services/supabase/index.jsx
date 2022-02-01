@@ -8,7 +8,10 @@ export function SupabaseService() {
   const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   async function getMessages() {
-    const { data, error } = await supabaseClient.from("chat").select("*");
+    const { data, error } = await supabaseClient
+      .from("chat")
+      .select("*")
+      .order("id", { ascending: false });
 
     return { data, error };
   }
@@ -21,8 +24,16 @@ export function SupabaseService() {
     return { data, error };
   }
 
+  function syncMessages(onChange) {
+    return supabaseClient
+      .from("chat")
+      .on("INSERT", ({ new: newMessage }) => onChange?.(newMessage))
+      .subscribe();
+  }
+
   return {
     getMessages,
     sendMessage,
+    syncMessages,
   };
 }
