@@ -8,4 +8,7 @@ export const STRINGS = {
   CHAT_PAGE: {
     INPUT_PLACEHOLDER: "Aa",
   },
+  SEND_STICKER_COMPONENT: {
+    TITLE: "Stickers",
+  },
 };
