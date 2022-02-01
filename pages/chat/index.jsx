@@ -7,6 +7,7 @@ import { SupabaseService } from "../../src/services";
 import { messageFactory } from "../../src/factories";
 import { useGlobaState } from "../../src/hooks";
 import { useRouter } from "next/router";
+import { SendStickerButton } from "../../src/components/send-sticker-button";
 
 const { CHAT_PAGE } = STRINGS;
 
@@ -38,16 +39,25 @@ function ChatPage() {
     }
 
     getMessages();
+
+    const subscription = supabase.syncMessages((newMessage) => {
+      setMessagesList((currentMessages) => {
+        return [messageFactory(newMessage), ...currentMessages];
+      });
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  async function onMessageSubmit() {
+  async function onMessageSubmit(message) {
     const { error } = await supabase.sendMessage({
       username: user.username,
-      message: inputMessage,
+      message,
     });
 
     if (!error) {
-      getMessages();
       setInputMessage("");
       return;
     }
@@ -61,11 +71,10 @@ function ChatPage() {
         style={{
           flex: 1,
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "column-reverse",
+          overflowY: "scroll",
           width: "100%",
           padding: "10px",
-          overflowY: "scroll",
-          justifyContent: "flex-end",
         }}
       >
         {messagesList?.map((msg) => (
@@ -96,9 +105,13 @@ function ChatPage() {
                 styleSheet={{ fontSize: "12px" }}
               >{`${msg.createdAt}`}</Text>
             </Box>
-            <Text styleSheet={{ fontSize: "16px", marginVertical: "15px" }}>
-              {msg.message}
-            </Text>
+            {msg.isSticker ? (
+              <Image src={msg.message.replace(":sticker:", "")} />
+            ) : (
+              <Text styleSheet={{ fontSize: "16px", marginVertical: "15px" }}>
+                {msg.message}
+              </Text>
+            )}
           </li>
         ))}
       </ul>
@@ -131,7 +144,7 @@ function ChatPage() {
           onKeyPress={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();
-              onMessageSubmit();
+              onMessageSubmit(inputMessage);
             }
           }}
           placeholder={CHAT_PAGE.INPUT_PLACEHOLDER}
@@ -147,13 +160,14 @@ function ChatPage() {
             color: COLORS.BUNKER,
           }}
         />
+        <SendStickerButton handleStickerClick={onMessageSubmit} />
         <Button
           iconName="arrowRight"
           disabled={!inputMessage}
           styleSheet={{
             backgroundColor: COLORS.BURNT_SIENNA,
           }}
-          onClick={onMessageSubmit}
+          onClick={() => onMessageSubmit(inputMessage)}
         />
       </Box>
     );
